@@ -1,0 +1,80 @@
+# Build folders
+build/
+devel/
+install/
+log/
+bin/
+lib/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Catkin / colcon
+.catkin_tools/
+.colcon/
+
+# ROS
+*.bag
+*.active
+*.pyc
+
+# VSCode
+.vscode/
+
+# CLion
+.idea/
+
+# Qt Creator
+*.pro.user
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+venv/
+.venv/
+
+# Logs
+*.log
+
+# Temporary files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Eigen / generated
+*.o
+*.a
+*.so
+*.out
+
+# ATI force sensor logs
+force_logs/
+*.csv
+
+# Launch/generated configs
+*.launch.user
+
+# Testing
+Testing/
+CTestTestfile.cmake
+
+# ROS message generation
+msg_gen/
+srv_gen/
+
+# NI DAQ / calibration backups
+*.bak
+
+# Mac/Linux hidden
+.Trashes
+.cache/
+
+# Executables
+*.exe
+*.elf
