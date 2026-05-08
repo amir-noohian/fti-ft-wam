@@ -1,4 +1,5 @@
 #include <barrett/standard_main_function.h>
+#include <barrett/systems/abstract/system.h>
 #include <barrett/systems/wam.h>
 #include <barrett/products/product_manager.h>
 
@@ -77,43 +78,41 @@ int wam_main(int argc, char** argv,
         baseFTToJointTorque.baseFTInput
     );
 
-    // Print raw sensor/tool-frame force/torque
+
     barrett::systems::PrintToStream<ft_type> printSensorFT(
         pm.getExecutionManager(),
         "Sensor/Tool FT: "
     );
 
-    // Print base-frame force/torque
     barrett::systems::PrintToStream<ft_type> printBaseFT(
         pm.getExecutionManager(),
         "Base FT: "
     );
 
-    // Print joint torques from Jacobian transpose
     barrett::systems::PrintToStream<jt_type> printJointTorque(
         pm.getExecutionManager(),
         "Joint Torque from FT: "
     );
 
-    barrett::systems::connect(
-        ftSensor.ftOutput,
-        printSensorFT.input
+    barrett::systems::PrintToStream<jt_type> printWamjtSum(
+        pm.getExecutionManager(),
+        "wam.jtSum: "
     );
 
-    barrett::systems::connect(
-        toolFTToBaseFT.baseFTOutput,
-        printBaseFT.input
+    barrett::systems::PrintToStream<jt_type> printGravity(
+        pm.getExecutionManager(),
+        "Gravity: "
     );
 
-    barrett::systems::connect(
-        baseFTToJointTorque.jointTorqueOutput,
-        printJointTorque.input
-    );
+    barrett::systems::connect(ftSensor.ftOutput, printSensorFT.input);
+    barrett::systems::connect(toolFTToBaseFT.baseFTOutput, printBaseFT.input);
+    barrett::systems::connect(baseFTToJointTorque.jointTorqueOutput, printJointTorque.input);
+    barrett::systems::connect(wam.jtSum.output, printWamjtSum.input);
+    barrett::systems::connect(wam.gravity.output, printGravity.input);
+
 
     wam.gravityCompensate();
 
-
-    // Libbarrett time signal
     barrett::systems::Ramp time(
         pm.getExecutionManager(),
         1.0
@@ -121,7 +120,6 @@ int wam_main(int argc, char** argv,
 
     time.stop();
 
-    // Group time + raw sensor FT data
     barrett::systems::TupleGrouper<double, ft_type> ftLogTg("FTLogGroup");
     pm.getExecutionManager()->startManaging(ftLogTg);
 
@@ -134,9 +132,9 @@ int wam_main(int argc, char** argv,
 
     std::cout << "FT sensor ready.\n";
     std::cout << "Log file: " << logFile << "\n";
-    std::cout << "Press Enter to START logging.\n";
-
-    std::cin.get();
+    std::cout << "Commands:\n";
+    std::cout << "  f + Enter : toggle FT joint-torque feedback to WAM input\n";
+    std::cout << "  q + Enter : quit\n";
 
     time.stop();
     time.reset();
@@ -151,10 +149,38 @@ int wam_main(int argc, char** argv,
 
     barrett::systems::forceConnect(ftLogTg.output, ftLogger->input);
 
-    std::cout << "Logging started.\n";
-    std::cout << "Press Enter to STOP logging.\n";
+    bool ftFeedbackEnabled = false;
+    char cmd;
 
-    std::cin.get();
+    while (std::cin >> cmd) {
+        if (cmd == 'f') {
+            if (!ftFeedbackEnabled) {
+                // barrett::systems::forceConnect(
+                //     baseFTToJointTorque.jointTorqueOutput,
+                //     wam.input
+                // );
+                wam.trackReferenceSignal(baseFTToJointTorque.jointTorqueOutput);
+
+                ftFeedbackEnabled = true;
+                std::cout << "FT joint-torque feedback ENABLED.\n";
+            } else {
+                // barrett::systems::disconnect(wam.input);
+                wam.idle();
+
+                // wam.gravityCompensate();
+
+                ftFeedbackEnabled = false;
+                std::cout << "FT joint-torque feedback DISABLED. Back to gravity compensation.\n";
+            }
+        } else if (cmd == 'q') {
+            break;
+        }
+    }
+
+    if (ftFeedbackEnabled) {
+        barrett::systems::disconnect(wam.input);
+        wam.gravityCompensate();
+    }
 
     barrett::systems::disconnect(ftLogger->input);
     ftLogger->closeFile();

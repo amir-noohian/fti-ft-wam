@@ -49,8 +49,14 @@ protected:
         const jacobian_type& J = jacobianInput.getValue();
         const bf_type& F_base = baseFTInput.getValue();
 
+        bf_type wrenchFiltered = F_base;
+        wrenchFiltered[3] = 0.0;
+        wrenchFiltered[4] = 0.0;
+        wrenchFiltered[5] = 0.0;
+
         // tau = J^T * F
-        jointTorque_ = J.transpose() * F_base;
+        // jointTorque_ = 1.0 * J.transpose() * F_base;
+        jointTorque_ = -2.0 * J.transpose() * wrenchFiltered;
 
         jointTorqueOutputValue->setData(&jointTorque_);
     }
