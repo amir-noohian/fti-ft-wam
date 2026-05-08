@@ -1,0 +1,40 @@
+# Build folders
+build/
+devel/
+install/
+log/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Catkin
+.catkin_tools/
+
+# VSCode
+.vscode/
+
+# CLion
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs and data
+*.csv
+*.log
+
+# ROS bags
+*.bag
+
+# Shared libraries / binaries
+*.so
+*.a
+*.o
+bin/
+
+# Temporary
+*.swp

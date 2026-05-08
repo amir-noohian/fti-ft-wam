@@ -1,0 +1,6 @@
+/home/hela/Desktop/ft_libbarrett/build/CMakeFiles/test.dir
+/home/hela/Desktop/ft_libbarrett/build/CMakeFiles/record.dir
+/home/hela/Desktop/ft_libbarrett/build/CMakeFiles/test_ft_system.dir
+/home/hela/Desktop/ft_libbarrett/build/CMakeFiles/ft_compensation.dir
+/home/hela/Desktop/ft_libbarrett/build/CMakeFiles/edit_cache.dir
+/home/hela/Desktop/ft_libbarrett/build/CMakeFiles/rebuild_cache.dir
