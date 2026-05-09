@@ -1,6 +1,6 @@
-# FTI-FT-WAM
+# ATI-FT-WAM
 
-Integration of ATI/FTI Mini40 force/torque sensors with Barrett WAM robotic arms using C++ and libbarrett.
+Integration of ATI Mini40 force/torque sensors with Barrett WAM robotic arms using C++ and libbarrett.
 
 This repository provides utilities and examples for reading, transforming, filtering, and using force/torque measurements on WAM manipulators for robotics research applications such as force control, teleoperation, and interaction control.
 
